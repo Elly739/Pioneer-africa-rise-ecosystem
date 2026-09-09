@@ -93,11 +93,59 @@ export const listMyConversations = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("ai_conversations")
-      .select("id,title,created_at")
+      .select("id,title,created_at,updated_at,context_label")
       .eq("user_id", context.userId)
       .eq("kind", data.kind)
-      .order("created_at", { ascending: false })
-      .limit(20);
+      .order("updated_at", { ascending: false })
+      .limit(40);
     if (error) throw error;
     return rows ?? [];
+  });
+
+/** Load the stored transcript of one conversation the learner owns. */
+export const getConversation = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(z.object({ conversationId: z.string().uuid() }))
+  .handler(async ({ data, context }) => {
+    const { data: conv } = await context.supabase
+      .from("ai_conversations")
+      .select("id,title,kind,context_label")
+      .eq("id", data.conversationId)
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (!conv) throw new Error("Conversation not found");
+
+    const { data: rows, error } = await context.supabase
+      .from("ai_messages")
+      .select("id,role,content,created_at")
+      .eq("conversation_id", data.conversationId)
+      .order("created_at", { ascending: true });
+    if (error) throw error;
+    return { conversation: conv, messages: rows ?? [] };
+  });
+
+export const renameConversation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(z.object({ conversationId: z.string().uuid(), title: z.string().min(1).max(80) }))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("ai_conversations")
+      .update({ title: data.title })
+      .eq("id", data.conversationId)
+      .eq("user_id", context.userId);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+export const deleteConversation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(z.object({ conversationId: z.string().uuid() }))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("ai_conversations")
+      .delete()
+      .eq("id", data.conversationId)
+      .eq("user_id", context.userId);
+    if (error) throw error;
+    return { ok: true };
   });
