@@ -91,7 +91,7 @@ export const Route = createFileRoute("/api/chat")({
           ]
             .filter(Boolean)
             .join("\n\n"),
-          messages: convertToModelMessages(messages),
+          messages: await convertToModelMessages(messages),
           tools: buildCoachTools(supabase as never, userId),
           stopWhen: stepCountIs(50),
         });
