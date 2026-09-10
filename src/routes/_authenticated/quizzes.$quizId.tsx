@@ -70,6 +70,13 @@ function QuizPage() {
                   <p className="font-mono mt-1">{result.certificateCode}</p>
                 </div>
               )}
+              <div className="mt-6">
+                <AskCoachButton
+                  context={`Quiz: ${data.quiz.title} (${result.score}%)`}
+                  label="Ask the mentor what to do next"
+                  prompt={`I scored ${result.score}% on the "${data.quiz.title}" quiz (pass mark ${data.quiz.passing_score}%). What exactly should I study next, and can you add it to my plan?`}
+                />
+              </div>
               <div className="mt-8 flex gap-3">
                 <Link to="/dashboard" className="px-6 py-3 rounded-full bg-brand-navy text-white font-bold">Back to dashboard</Link>
                 {!result.passed && (
