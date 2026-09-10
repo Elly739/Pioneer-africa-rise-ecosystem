@@ -75,7 +75,7 @@ export function CoachChat({
 
   const [conversations, setConversations] = useState<ConvRow[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [sessionKey, setSessionKey] = useState(() => crypto.randomUUID());
+  const [sessionKey, setSessionKey] = useState<string>(() => crypto.randomUUID());
   const [initialMessages, setInitialMessages] = useState<UIMessage[]>([]);
   const [language, setLanguage] = useState("en");
   const [sidebarOpen, setSidebarOpen] = useState(false);
