@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
+import { AskCoachButton } from "@/components/ai/ask-coach-button";
 import { supabase } from "@/integrations/supabase/client";
 import { listMyProjects } from "@/lib/api/ecosystem.functions";
 import { applyToOpportunity } from "@/lib/api/careers.functions";
@@ -264,6 +265,14 @@ function CareersPage() {
                       </button>
                     ) : (
                       <Link to="/auth" search={{ mode: "signup" }} className="text-xs font-bold text-brand-navy/60 hover:text-brand-navy">Sign in to apply</Link>
+                    )}
+                    {signedIn && (
+                      <AskCoachButton
+                        kind="advisor"
+                        label="Ask the advisor"
+                        context={`Opportunity: ${o.title} @ ${o.organization}`}
+                        prompt={`I'm considering applying to "${o.title}" at ${o.organization}. Am I a good fit given my profile, and what should my application say?`}
+                      />
                     )}
                     {o.apply_url && (
                       <a href={o.apply_url} target="_blank" rel="noreferrer" className="text-sm font-bold text-brand-orange hover:underline">External link →</a>
