@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
 import { completeLesson, getLesson } from "@/lib/api/learn.functions";
 import { SiteNav } from "@/components/site-nav";
+import { AskCoachButton } from "@/components/ai/ask-coach-button";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/lessons/$lessonId")({
@@ -63,7 +64,13 @@ function LessonPage() {
           <p className="text-xs font-bold uppercase tracking-widest text-brand-orange mb-3">
             Lesson {data.lesson.order} · {data.lesson.duration_min} min
           </p>
-          <h1 className="font-display text-4xl md:text-5xl font-bold mb-8 leading-tight">{data.lesson.title}</h1>
+          <div className="flex flex-wrap items-start justify-between gap-3 mb-8">
+            <h1 className="font-display text-4xl md:text-5xl font-bold leading-tight">{data.lesson.title}</h1>
+            <AskCoachButton
+              context={`Lesson: ${data.lesson.title}`}
+              prompt={`I'm working through the lesson "${data.lesson.title}". Explain the key idea simply and give me one practice task.`}
+            />
+          </div>
           <div className="prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-h2:text-2xl prose-pre:bg-brand-navy prose-pre:text-white prose-code:text-brand-orange prose-code:font-mono">
             <ReactMarkdown>{data.lesson.content}</ReactMarkdown>
           </div>
