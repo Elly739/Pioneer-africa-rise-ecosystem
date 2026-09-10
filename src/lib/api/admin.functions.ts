@@ -540,3 +540,60 @@ export const getAdminOverview = createServerFn({ method: "GET" })
     };
   });
 
+
+// Admin funnel analytics: signup -> onboarded -> enrolled -> project shipped -> applied
+export const getFunnelAnalytics = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    await assertAnyRole(supabase, userId, ["admin"]);
+    const admin = await loadAdmin();
+
+    const since = new Date(Date.now() - 29 * 24 * 60 * 60 * 1000).toISOString();
+
+    const [
+      { data: profiles },
+      { data: enrollments },
+      { data: projects },
+      { data: applications },
+      { data: certificates },
+    ] = await Promise.all([
+      admin.from("profiles").select("id, onboarded_at, created_at"),
+      admin.from("enrollments").select("user_id"),
+      admin.from("projects").select("user_id"),
+      admin.from("applications").select("user_id"),
+      admin.from("certificates").select("user_id"),
+    ]);
+
+    const uniq = (rows: { user_id: string }[] | null) =>
+      new Set((rows ?? []).map((r) => r.user_id)).size;
+
+    const signups = profiles?.length ?? 0;
+    const onboarded = (profiles ?? []).filter((p: any) => !!p.onboarded_at).length;
+
+    const steps = [
+      { key: "signup", label: "Signed up", value: signups },
+      { key: "onboarded", label: "Completed onboarding", value: onboarded },
+      { key: "enrolled", label: "Enrolled in a course", value: uniq(enrollments as any) },
+      { key: "certified", label: "Earned a certificate", value: uniq(certificates as any) },
+      { key: "shipped", label: "Shipped a project", value: uniq(projects as any) },
+      { key: "applied", label: "Applied to an opportunity", value: uniq(applications as any) },
+    ];
+
+    // 30-day signup trend
+    const buckets = new Map<string, number>();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+      buckets.set(d, 0);
+    }
+    for (const p of profiles ?? []) {
+      const day = String((p as any).created_at ?? "").slice(0, 10);
+      if (buckets.has(day)) buckets.set(day, (buckets.get(day) ?? 0) + 1);
+    }
+
+    return {
+      steps,
+      signupsLast30: (profiles ?? []).filter((p: any) => p.created_at >= since).length,
+      trend: Array.from(buckets, ([date, count]) => ({ date, count })),
+    };
+  });
