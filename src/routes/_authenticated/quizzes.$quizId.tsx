@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { getQuiz, submitQuiz } from "@/lib/api/learn.functions";
 import { SiteNav } from "@/components/site-nav";
+import { AskCoachButton } from "@/components/ai/ask-coach-button";
 
 export const Route = createFileRoute("/_authenticated/quizzes/$quizId")({
   head: () => ({ meta: [{ title: "Quiz · Pioneer Africa Hub" }] }),
