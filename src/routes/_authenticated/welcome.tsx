@@ -5,6 +5,7 @@ import { useState } from "react";
 import { SiteNav } from "@/components/site-nav";
 import { saveOnboarding } from "@/lib/api/personalization.functions";
 import { toast } from "sonner";
+import { GraduationCap, Briefcase, Rocket, Users } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/welcome")({
   head: () => ({ meta: [{ title: "Welcome · Pioneer Africa Hub" }] }),
@@ -23,10 +24,10 @@ const LEVELS = [
 ] as const;
 
 const GOALS = [
-  { id: "learn", label: "Learn new skills", emoji: "📚" },
-  { id: "job", label: "Find a job or internship", emoji: "💼" },
-  { id: "build", label: "Build my own thing", emoji: "🚀" },
-  { id: "network", label: "Meet other builders", emoji: "🤝" },
+  { id: "learn", label: "Learn new skills", Icon: GraduationCap },
+  { id: "job", label: "Find a job or internship", Icon: Briefcase },
+  { id: "build", label: "Build my own thing", Icon: Rocket },
+  { id: "network", label: "Meet other builders", Icon: Users },
 ] as const;
 
 function Welcome() {
@@ -109,7 +110,7 @@ function Welcome() {
                     goal === g.id ? "border-brand-orange bg-brand-orange/5" : "border-brand-navy/10 bg-white hover:border-brand-navy/30"
                   }`}
                 >
-                  <div className="text-3xl mb-2">{g.emoji}</div>
+                  <div className="mb-3 size-11 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center"><g.Icon className="size-5" aria-hidden /></div>
                   <div className="font-display font-bold">{g.label}</div>
                 </button>
               ))}
