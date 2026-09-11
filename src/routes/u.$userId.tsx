@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Flame } from "lucide-react";
 import { useSuspenseQuery, queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
@@ -91,7 +92,7 @@ function ProfilePage() {
               <span><span className="font-bold">{followerCount}</span> <span className="text-brand-navy/60">followers</span></span>
               <span><span className="font-bold">{followingCount}</span> <span className="text-brand-navy/60">following</span></span>
               <span><span className="font-bold text-brand-orange">Lv {stats.level}</span> <span className="text-brand-navy/60">· {stats.xp} XP</span></span>
-              {stats.streak_days > 0 && <span>🔥 <span className="font-bold">{stats.streak_days}</span> day streak</span>}
+              {stats.streak_days > 0 && <span className="inline-flex items-center gap-1.5"><Flame className="size-4 text-brand-orange" aria-hidden /><span className="font-bold">{stats.streak_days}</span> <span className="text-brand-navy/60">day streak</span></span>}
             </div>
             {links.length > 0 && (
               <div className="flex flex-wrap gap-3 mt-3 text-sm font-bold text-brand-orange">

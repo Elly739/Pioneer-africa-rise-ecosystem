@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { listChallenges, createChallenge } from "@/lib/api/challenges.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Trophy, Users, Upload } from "lucide-react";
 
 const challengesQuery = queryOptions({
   queryKey: ["challenges", "all"],
@@ -94,7 +95,7 @@ function ChallengesPage() {
       <div className="px-6 max-w-7xl mx-auto pb-24">
         {filtered.length === 0 ? (
           <div className="py-20 text-center bg-white rounded-3xl border border-brand-navy/5">
-            <div className="text-5xl mb-4">🏆</div>
+            <div className="mx-auto mb-4 size-14 rounded-2xl bg-brand-orange/10 text-brand-orange flex items-center justify-center"><Trophy className="size-7" aria-hidden /></div>
             <p className="text-brand-navy/60 mb-4">No challenges here yet.</p>
             {signedIn && (
               <button onClick={() => setOpen(true)} className="px-5 py-2.5 bg-brand-orange text-white rounded-full font-semibold">
@@ -116,11 +117,11 @@ function ChallengesPage() {
                 <h3 className="font-display text-xl font-bold mb-2 leading-tight">{c.title}</h3>
                 <p className="text-sm text-brand-navy/60 line-clamp-3 mb-4 flex-1">{c.description || "Open challenge — see details inside."}</p>
                 {c.prize && (
-                  <div className="mb-3 text-sm font-semibold text-brand-orange">🏆 {c.prize}</div>
+                  <div className="mb-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange"><Trophy className="size-4" aria-hidden /> {c.prize}</div>
                 )}
                 <div className="flex items-center gap-4 text-xs text-brand-navy/50 pt-3 border-t border-brand-navy/5">
-                  <span>👥 {c.team_count} teams</span>
-                  <span>📤 {c.submission_count} submissions</span>
+                  <span className="inline-flex items-center gap-1.5"><Users className="size-3.5" aria-hidden /> {c.team_count} teams</span>
+                  <span className="inline-flex items-center gap-1.5"><Upload className="size-3.5" aria-hidden /> {c.submission_count} submissions</span>
                 </div>
                 {c.tags.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1.5">

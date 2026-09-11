@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Flame } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -77,7 +78,7 @@ export function SiteNav() {
                 <div className="hidden md:flex items-center gap-2 mr-1" aria-label={`Level ${stats.level}, ${stats.xp} XP, ${stats.streak_days} day streak`}>
                   <span className="px-2.5 py-1 rounded-full bg-brand-mint/15 text-brand-mint text-xs font-bold" title="Experience points">Lv {stats.level} · {stats.xp} XP</span>
                   {stats.streak_days > 0 && (
-                    <span className="px-2.5 py-1 rounded-full bg-brand-orange/15 text-brand-orange text-xs font-bold" title="Daily streak">🔥 {stats.streak_days}d</span>
+                    <span className="px-2.5 py-1 rounded-full bg-brand-orange/15 text-brand-orange text-xs font-bold" title="Daily streak"><Flame className="size-3.5 inline -mt-0.5" aria-hidden /> {stats.streak_days}d</span>
                   )}
                 </div>
               )}

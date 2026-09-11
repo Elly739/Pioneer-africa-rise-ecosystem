@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { SiteNav } from "@/components/site-nav";
+import { AskCoachButton } from "@/components/ai/ask-coach-button";
+import { Heart } from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
 import { getProject, toggleProjectLike, uploadProjectCover, setProjectCover } from "@/lib/api/ecosystem.functions";
 import { getMyCollabStatus, requestCollaboration, updateProjectCollab } from "@/lib/api/collab.functions";
@@ -182,10 +184,16 @@ function ProjectPage() {
             disabled={!signedIn || like.isPending}
             className="px-5 py-2.5 bg-brand-clay rounded-full font-bold text-sm hover:bg-brand-clay/70 disabled:opacity-60"
           >
-            ❤ {likes} {signedIn ? "Like" : "Sign in to like"}
+            <Heart className="size-4 inline -mt-0.5" aria-hidden /> {likes} {signedIn ? "Like" : "Sign in to like"}
           </button>
           {project.repo_url && <a href={project.repo_url} target="_blank" rel="noreferrer" className="text-sm font-bold text-brand-orange hover:underline">Repo →</a>}
           {project.demo_url && <a href={project.demo_url} target="_blank" rel="noreferrer" className="text-sm font-bold text-brand-orange hover:underline">Live demo →</a>}
+          {signedIn && (
+            <AskCoachButton
+              context={`Project: ${project.title}`}
+              prompt={`I'm looking at the project "${project.title}" — ${project.summary}. How could I build something like this, or improve my own version?`}
+            />
+          )}
         </div>
 
         {project.tags?.length > 0 && (

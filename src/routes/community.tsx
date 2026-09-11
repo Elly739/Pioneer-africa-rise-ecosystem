@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { listDiscussions, createDiscussion } from "@/lib/api/ecosystem.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { MessagesSquare, BookOpen, Briefcase, Hammer, Compass, Sprout } from "lucide-react";
 
 const discussionsQuery = queryOptions({
   queryKey: ["discussions"],
@@ -26,11 +27,11 @@ export const Route = createFileRoute("/community")({
 });
 
 const TOPICS = [
-  { id: "general", label: "General", emoji: "💬", desc: "Open discussions, intros, and updates." },
-  { id: "learning", label: "Learning", emoji: "📚", desc: "Ask for help, share study tips, find study buddies." },
-  { id: "careers", label: "Careers", emoji: "🚀", desc: "Job hunts, interviews, scholarships, CV reviews." },
-  { id: "building", label: "Building", emoji: "🛠️", desc: "Show your projects, find collaborators, get feedback." },
-  { id: "mentorship", label: "Mentorship", emoji: "🧭", desc: "Ask for guidance or offer to mentor someone." },
+  { id: "general", label: "General", Icon: MessagesSquare, desc: "Open discussions, intros, and updates." },
+  { id: "learning", label: "Learning", Icon: BookOpen, desc: "Ask for help, share study tips, find study buddies." },
+  { id: "careers", label: "Careers", Icon: Briefcase, desc: "Job hunts, interviews, scholarships, CV reviews." },
+  { id: "building", label: "Building", Icon: Hammer, desc: "Show your projects, find collaborators, get feedback." },
+  { id: "mentorship", label: "Mentorship", Icon: Compass, desc: "Ask for guidance or offer to mentor someone." },
 ];
 
 function timeAgo(iso: string) {
@@ -143,15 +144,17 @@ function CommunityPage() {
               <button
                 key={t.id}
                 onClick={() => setTopic(t.id)}
-                className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full ${topic === t.id ? "bg-brand-navy text-white" : "bg-brand-clay text-brand-navy hover:bg-brand-clay/70"}`}
-              >{t.emoji} {t.label}</button>
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full ${topic === t.id ? "bg-brand-navy text-white" : "bg-brand-clay text-brand-navy hover:bg-brand-clay/70"}`}
+              ><t.Icon className="size-3.5" aria-hidden /> {t.label}</button>
             ))}
           </div>
 
           {/* Thread list */}
           {filtered.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-brand-navy/15 p-10 text-center bg-white">
-              <div className="text-3xl mb-3">🌱</div>
+              <div className="mx-auto mb-3 size-12 rounded-2xl bg-brand-mint/15 text-brand-mint flex items-center justify-center">
+                <Sprout className="size-6" aria-hidden />
+              </div>
               <p className="font-display text-lg font-bold">Nothing here yet</p>
               <p className="text-sm text-brand-navy/60 mt-1 max-w-sm mx-auto">
                 {q || topic !== "all" ? "Try a different topic or clear the search." : "Be the first to start a conversation in this space."}
@@ -180,8 +183,9 @@ function CommunityPage() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-clay text-brand-navy/70 uppercase font-bold tracking-wider">
-                            {meta?.emoji} {meta?.label ?? t.topic}
+                          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-brand-clay text-brand-navy/70 uppercase font-bold tracking-wider">
+                            {meta?.Icon ? <meta.Icon className="size-3" aria-hidden /> : null}
+                            {meta?.label ?? t.topic}
                           </span>
                           <span className="text-xs text-brand-navy/50">{t.author?.display_name ?? "Anonymous"}</span>
                           <span className="text-xs text-brand-navy/30">·</span>
@@ -218,7 +222,9 @@ function CommunityPage() {
                 return (
                   <li key={t.id}>
                     <button onClick={() => setTopic(t.id)} className="w-full text-left flex items-start gap-3 group">
-                      <span className="text-lg">{t.emoji}</span>
+                      <span className="size-8 shrink-0 rounded-xl bg-brand-clay text-brand-navy/70 flex items-center justify-center group-hover:bg-brand-orange/15 group-hover:text-brand-orange transition-colors">
+                        <t.Icon className="size-4" aria-hidden />
+                      </span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <span className="font-display font-bold text-sm group-hover:text-brand-orange">{t.label}</span>
@@ -270,8 +276,8 @@ function ComposeForm({ onDone }: { onDone: () => void }) {
             key={t.id}
             type="button"
             onClick={() => setForm({ ...form, topic: t.id })}
-            className={`px-3 py-1 rounded-full text-xs font-bold ${form.topic === t.id ? "bg-brand-navy text-white" : "bg-brand-clay text-brand-navy hover:bg-brand-clay/70"}`}
-          >{t.emoji} {t.label}</button>
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${form.topic === t.id ? "bg-brand-navy text-white" : "bg-brand-clay text-brand-navy hover:bg-brand-clay/70"}`}
+          ><t.Icon className="size-3.5" aria-hidden /> {t.label}</button>
         ))}
         <div className="ml-auto flex gap-2">
           <button type="button" onClick={onDone} className="px-4 py-2 text-sm font-bold text-brand-navy/60 hover:text-brand-navy">Cancel</button>
