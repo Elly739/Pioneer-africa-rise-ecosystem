@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { SiteNav } from "@/components/site-nav";
+import { AskCoachButton } from "@/components/ai/ask-coach-button";
+import { Heart } from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
 import { getProject, toggleProjectLike, uploadProjectCover, setProjectCover } from "@/lib/api/ecosystem.functions";
 import { getMyCollabStatus, requestCollaboration, updateProjectCollab } from "@/lib/api/collab.functions";
