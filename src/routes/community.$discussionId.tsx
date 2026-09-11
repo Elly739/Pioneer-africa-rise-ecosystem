@@ -86,7 +86,7 @@ function ThreadPage() {
 
         {replies.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-brand-navy/15 p-8 text-center bg-white">
-            <div className="text-2xl mb-2">💬</div>
+            <div className="mx-auto mb-3 size-10 rounded-xl bg-brand-clay text-brand-navy/60 flex items-center justify-center"><MessagesSquare className="size-5" aria-hidden /></div>
             <p className="text-sm text-brand-navy/60">No replies yet — be the first to add to the conversation.</p>
           </div>
         ) : (

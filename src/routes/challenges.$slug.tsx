@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Trophy } from "lucide-react";
 import { useSuspenseQuery, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -79,7 +80,7 @@ function ChallengeDetailPage() {
             {challenge.deadline && <span className="text-sm font-semibold text-brand-navy/60">Deadline: {new Date(challenge.deadline).toLocaleString()}</span>}
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-bold mt-4">{challenge.title}</h1>
-          {challenge.prize && <p className="mt-3 text-lg font-semibold text-brand-orange">🏆 {challenge.prize}</p>}
+          {challenge.prize && <p className="mt-3 inline-flex items-center gap-2 text-lg font-semibold text-brand-orange"><Trophy className="size-5" aria-hidden /> {challenge.prize}</p>}
           {challenge.description && <p className="mt-6 text-brand-navy/70 whitespace-pre-line leading-relaxed">{challenge.description}</p>}
           {challenge.tags.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-1.5">
@@ -175,7 +176,7 @@ function ChallengeDetailPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="font-display text-xl font-bold">{s.title}</h3>
-                          {isWinner && <span className="px-2 py-0.5 bg-brand-orange text-white rounded-full text-[10px] font-bold uppercase">🏆 Winner</span>}
+                          {isWinner && <span className="px-2 py-0.5 bg-brand-orange text-white rounded-full text-[10px] font-bold uppercase inline-flex items-center gap-1"><Trophy className="size-3" aria-hidden /> Winner</span>}
                         </div>
                         {s.description && <p className="text-sm text-brand-navy/60 mt-2 whitespace-pre-line">{s.description}</p>}
                         <div className="mt-3 flex flex-wrap gap-3 text-sm">
