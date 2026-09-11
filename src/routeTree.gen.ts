@@ -53,6 +53,7 @@ import { Route as AuthenticatedAdminCoursesRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin.content'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin.blog'
 import { Route as AuthenticatedAdminAnnouncementsRouteImport } from './routes/_authenticated/admin.announcements'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -288,6 +289,12 @@ const AuthenticatedAdminAnnouncementsRoute =
     path: '/announcements',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -328,6 +335,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
@@ -373,6 +381,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
@@ -421,6 +430,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRoute
   '/_authenticated/admin/content': typeof AuthenticatedAdminContentRoute
@@ -469,6 +479,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/courses/'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/analytics'
     | '/admin/announcements'
     | '/admin/blog'
     | '/admin/content'
@@ -514,6 +525,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/courses'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/analytics'
     | '/admin/announcements'
     | '/admin/blog'
     | '/admin/content'
@@ -561,6 +573,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/courses/'
     | '/.mcp/invoke-tool/$tool'
+    | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/announcements'
     | '/_authenticated/admin/blog'
     | '/_authenticated/admin/content'
@@ -907,6 +920,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAnnouncementsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -918,6 +938,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
   AuthenticatedAdminAnnouncementsRoute: typeof AuthenticatedAdminAnnouncementsRoute
   AuthenticatedAdminBlogRoute: typeof AuthenticatedAdminBlogRoute
   AuthenticatedAdminContentRoute: typeof AuthenticatedAdminContentRoute
@@ -930,6 +951,7 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
   AuthenticatedAdminAnnouncementsRoute: AuthenticatedAdminAnnouncementsRoute,
   AuthenticatedAdminBlogRoute: AuthenticatedAdminBlogRoute,
   AuthenticatedAdminContentRoute: AuthenticatedAdminContentRoute,
