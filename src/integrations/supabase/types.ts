@@ -154,6 +154,33 @@ export type Database = {
           },
         ]
       }
+      badges: {
+        Row: {
+          code: string
+          description: string
+          icon: string
+          name: string
+          sort_order: number
+          tier: string
+        }
+        Insert: {
+          code: string
+          description: string
+          icon?: string
+          name: string
+          sort_order?: number
+          tier?: string
+        }
+        Update: {
+          code?: string
+          description?: string
+          icon?: string
+          name?: string
+          sort_order?: number
+          tier?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author_id: string | null
@@ -1222,6 +1249,32 @@ export type Database = {
         }
         Relationships: []
       }
+      user_badges: {
+        Row: {
+          badge_code: string
+          earned_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_code: string
+          earned_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_code?: string
+          earned_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_code_fkey"
+            columns: ["badge_code"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -1282,6 +1335,23 @@ export type Database = {
         }
         Relationships: []
       }
+      leaderboard: {
+        Row: {
+          avatar_url: string | null
+          badge_count: number | null
+          certificates_count: number | null
+          country: string | null
+          display_name: string | null
+          headline: string | null
+          level: number | null
+          projects_count: number | null
+          score: number | null
+          university: string | null
+          user_id: string | null
+          xp: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       award_xp: {
@@ -1291,6 +1361,10 @@ export type Database = {
       fanout_announcement: {
         Args: { _announcement_id: string }
         Returns: number
+      }
+      grant_badge: {
+        Args: { _code: string; _user_id: string }
+        Returns: undefined
       }
       has_community_activity: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
