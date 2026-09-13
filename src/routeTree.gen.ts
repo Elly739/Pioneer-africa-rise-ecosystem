@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as InnovateRouteImport } from './routes/innovate'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as ChallengesRouteImport } from './routes/challenges'
@@ -64,6 +65,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaderboardRoute = LeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InnovateRoute = InnovateRouteImport.update({
@@ -309,6 +315,7 @@ export interface FileRoutesByFullPath {
   '/challenges': typeof ChallengesRouteWithChildren
   '/community': typeof CommunityRouteWithChildren
   '/innovate': typeof InnovateRouteWithChildren
+  '/leaderboard': typeof LeaderboardRoute
   '/mcp': typeof McpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -356,6 +363,7 @@ export interface FileRoutesByTo {
   '/challenges': typeof ChallengesRouteWithChildren
   '/community': typeof CommunityRouteWithChildren
   '/innovate': typeof InnovateRouteWithChildren
+  '/leaderboard': typeof LeaderboardRoute
   '/mcp': typeof McpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -404,6 +412,7 @@ export interface FileRoutesById {
   '/challenges': typeof ChallengesRouteWithChildren
   '/community': typeof CommunityRouteWithChildren
   '/innovate': typeof InnovateRouteWithChildren
+  '/leaderboard': typeof LeaderboardRoute
   '/mcp': typeof McpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -453,6 +462,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/community'
     | '/innovate'
+    | '/leaderboard'
     | '/mcp'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
@@ -500,6 +510,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/community'
     | '/innovate'
+    | '/leaderboard'
     | '/mcp'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
@@ -547,6 +558,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/community'
     | '/innovate'
+    | '/leaderboard'
     | '/mcp'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
@@ -596,6 +608,7 @@ export interface RootRouteChildren {
   ChallengesRoute: typeof ChallengesRouteWithChildren
   CommunityRoute: typeof CommunityRouteWithChildren
   InnovateRoute: typeof InnovateRouteWithChildren
+  LeaderboardRoute: typeof LeaderboardRoute
   McpRoute: typeof McpRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
@@ -624,6 +637,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leaderboard': {
+      id: '/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/innovate': {
@@ -1047,6 +1067,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChallengesRoute: ChallengesRouteWithChildren,
   CommunityRoute: CommunityRouteWithChildren,
   InnovateRoute: InnovateRouteWithChildren,
+  LeaderboardRoute: LeaderboardRoute,
   McpRoute: McpRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,

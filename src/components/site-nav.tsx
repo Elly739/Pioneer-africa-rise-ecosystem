@@ -16,6 +16,7 @@ const navLinks = [
   { to: "/innovate" as const, label: "Innovate" },
   { to: "/challenges" as const, label: "Challenges" },
   { to: "/community" as const, label: "Community" },
+  { to: "/leaderboard" as const, label: "Leaderboard" },
   { to: "/blog" as const, label: "Blog" },
 ];
 

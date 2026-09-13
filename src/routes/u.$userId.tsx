@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { getPublicProfile, isFollowing, toggleFollow } from "@/lib/api/social.functions";
+import { getUserBadges } from "@/lib/api/gamification.functions";
+import { BadgeGrid } from "@/components/badge-grid";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -154,6 +156,23 @@ function ProfilePage() {
             <Link to="/portfolio" className="inline-flex mt-6 px-5 py-2.5 rounded-full bg-brand-orange text-white text-sm font-bold">
               Edit your portfolio →
             </Link>
+          )}
+        </section>
+
+        <section className="mb-10">
+          <div className="flex items-baseline justify-between gap-3 mb-4">
+            <h2 className="font-display text-xl font-bold">Badges</h2>
+            <Link to="/leaderboard" className="text-xs font-bold text-brand-orange hover:underline">View leaderboard →</Link>
+          </div>
+          {badgesQ.data ? (
+            <BadgeGrid badges={badgesQ.data} showLocked={isSelf} />
+          ) : (
+            <div className="h-24 rounded-2xl bg-brand-navy/5 animate-pulse" />
+          )}
+          {badgesQ.data && badgesQ.data.every((b) => !b.earned_at) && (
+            <p className="text-sm text-brand-navy/60">
+              {isSelf ? "No badges yet — ship a project or finish a course to unlock your first one." : "No badges yet."}
+            </p>
           )}
         </section>
 
