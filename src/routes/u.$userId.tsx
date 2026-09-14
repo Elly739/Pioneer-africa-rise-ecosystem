@@ -53,6 +53,13 @@ function ProfilePage() {
     enabled: !!meId && !isSelf,
   });
 
+  const badgesQ = useQuery({
+    queryKey: ["user-badges", userId],
+    queryFn: () => getUserBadges({ data: { userId } }),
+  });
+
+
+
   const follow = useMutation({
     mutationFn: () => followFn({ data: { userId } }),
     onSuccess: (r) => {
