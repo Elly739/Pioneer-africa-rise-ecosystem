@@ -1062,6 +1062,7 @@ export type Database = {
         Row: {
           apply_url: string | null
           created_at: string
+          created_by: string | null
           deadline: string | null
           description: string
           id: string
@@ -1075,6 +1076,7 @@ export type Database = {
         Insert: {
           apply_url?: string | null
           created_at?: string
+          created_by?: string | null
           deadline?: string | null
           description?: string
           id?: string
@@ -1088,6 +1090,7 @@ export type Database = {
         Update: {
           apply_url?: string | null
           created_at?: string
+          created_by?: string | null
           deadline?: string | null
           description?: string
           id?: string
