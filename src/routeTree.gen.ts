@@ -49,6 +49,7 @@ import { Route as AuthenticatedLessonsLessonIdRouteImport } from './routes/_auth
 import { Route as AuthenticatedInviteTokenRouteImport } from './routes/_authenticated/invite.$token'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminRequestsRouteImport } from './routes/_authenticated/admin.requests'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
 import { Route as AuthenticatedAdminOpportunitiesRouteImport } from './routes/_authenticated/admin.opportunities'
 import { Route as AuthenticatedAdminInvitesRouteImport } from './routes/_authenticated/admin.invites'
 import { Route as AuthenticatedAdminCoursesRouteImport } from './routes/_authenticated/admin.courses'
@@ -266,6 +267,12 @@ const AuthenticatedAdminRequestsRoute =
     path: '/requests',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminOpportunitiesRoute =
   AuthenticatedAdminOpportunitiesRouteImport.update({
     id: '/opportunities',
@@ -356,6 +363,7 @@ export interface FileRoutesByFullPath {
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/invites': typeof AuthenticatedAdminInvitesRoute
   '/admin/opportunities': typeof AuthenticatedAdminOpportunitiesRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
@@ -404,6 +412,7 @@ export interface FileRoutesByTo {
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/invites': typeof AuthenticatedAdminInvitesRoute
   '/admin/opportunities': typeof AuthenticatedAdminOpportunitiesRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
@@ -455,6 +464,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/_authenticated/admin/invites': typeof AuthenticatedAdminInvitesRoute
   '/_authenticated/admin/opportunities': typeof AuthenticatedAdminOpportunitiesRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/_authenticated/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/invite/$token': typeof AuthenticatedInviteTokenRoute
@@ -506,6 +516,7 @@ export interface FileRouteTypes {
     | '/admin/courses'
     | '/admin/invites'
     | '/admin/opportunities'
+    | '/admin/reports'
     | '/admin/requests'
     | '/admin/users'
     | '/invite/$token'
@@ -554,6 +565,7 @@ export interface FileRouteTypes {
     | '/admin/courses'
     | '/admin/invites'
     | '/admin/opportunities'
+    | '/admin/reports'
     | '/admin/requests'
     | '/admin/users'
     | '/invite/$token'
@@ -604,6 +616,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/courses'
     | '/_authenticated/admin/invites'
     | '/_authenticated/admin/opportunities'
+    | '/_authenticated/admin/reports'
     | '/_authenticated/admin/requests'
     | '/_authenticated/admin/users'
     | '/_authenticated/invite/$token'
@@ -918,6 +931,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRequestsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/opportunities': {
       id: '/_authenticated/admin/opportunities'
       path: '/opportunities'
@@ -985,6 +1005,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminCoursesRoute: typeof AuthenticatedAdminCoursesRoute
   AuthenticatedAdminInvitesRoute: typeof AuthenticatedAdminInvitesRoute
   AuthenticatedAdminOpportunitiesRoute: typeof AuthenticatedAdminOpportunitiesRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
   AuthenticatedAdminRequestsRoute: typeof AuthenticatedAdminRequestsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -998,6 +1019,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminCoursesRoute: AuthenticatedAdminCoursesRoute,
   AuthenticatedAdminInvitesRoute: AuthenticatedAdminInvitesRoute,
   AuthenticatedAdminOpportunitiesRoute: AuthenticatedAdminOpportunitiesRoute,
+  AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
   AuthenticatedAdminRequestsRoute: AuthenticatedAdminRequestsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
