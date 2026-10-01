@@ -1,11 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { MessagesSquare } from "lucide-react";
-import { useSuspenseQuery, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { MessagesSquare, CalendarClock } from "lucide-react";
+import { useSuspenseQuery, useQuery, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { getDiscussion, replyToDiscussion } from "@/lib/api/ecosystem.functions";
+import { getThreadVotes, toggleThreadVote, setAcceptedAnswer } from "@/lib/api/community.functions";
+import { VoteButton, AcceptedBadge, ReportButton } from "@/components/thread-actions";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -48,9 +50,30 @@ function ThreadPage() {
   const { data } = useSuspenseQuery(threadQuery(discussionId));
   const qc = useQueryClient();
   const reply = useServerFn(replyToDiscussion);
+  const votesFn = useServerFn(getThreadVotes);
+  const toggleFn = useServerFn(toggleThreadVote);
+  const acceptFn = useServerFn(setAcceptedAnswer);
   const [signedIn, setSignedIn] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [body, setBody] = useState("");
-  useEffect(() => { supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session)); }, []);
+  useEffect(() => { supabase.auth.getSession().then(({ data }) => { setSignedIn(!!data.session); setUserId(data.session?.user.id ?? null); }); }, []);
+
+  const { data: votes } = useQuery({
+    queryKey: ["thread-votes", discussionId, userId],
+    queryFn: () => votesFn({ data: { discussionId, viewerId: userId } }),
+  });
+  const refreshVotes = () => qc.invalidateQueries({ queryKey: ["thread-votes", discussionId] });
+
+  const vote = useMutation({
+    mutationFn: (t: { discussionId: string | null; replyId: string | null }) => toggleFn({ data: t }),
+    onSuccess: refreshVotes,
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Vote failed"),
+  });
+  const accept = useMutation({
+    mutationFn: (replyId: string | null) => acceptFn({ data: { discussionId, replyId } }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["discussion", discussionId] }); toast.success("Updated"); },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
+  });
 
   const m = useMutation({
     mutationFn: () => reply({ data: { discussionId, body } }),
@@ -59,7 +82,17 @@ function ThreadPage() {
   });
 
   if (!data) return null;
-  const { discussion, replies } = data as any;
+  const { discussion, replies: rawReplies } = data as any;
+  const acceptedId: string | null = discussion.accepted_reply_id ?? null;
+  const isOwner = !!userId && userId === discussion.user_id;
+  const counts = votes?.counts ?? {};
+  const mine = new Set(votes?.mine ?? []);
+  const onVote = (t: { discussionId: string | null; replyId: string | null }) => {
+    if (!signedIn) { toast.info("Sign in to upvote"); return; }
+    vote.mutate(t);
+  };
+  const replies = [...rawReplies].sort((a: any, b: any) =>
+    (b.id === acceptedId ? 1 : 0) - (a.id === acceptedId ? 1 : 0) || (counts[b.id] ?? 0) - (counts[a.id] ?? 0));
 
   return (
     <div className="min-h-screen bg-brand-bg text-brand-navy">
@@ -77,8 +110,17 @@ function ThreadPage() {
               <p className="text-xs text-brand-navy/40">{timeAgo(discussion.created_at)} · <span className="uppercase tracking-wider font-bold text-brand-navy/50">{discussion.topic}</span></p>
             </div>
           </div>
+          {discussion.is_office_hours && (
+            <p className="mb-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-mint/15 text-brand-mint text-xs font-bold">
+              <CalendarClock className="size-3.5" aria-hidden /> Office hours{discussion.office_hours_at ? ` · ${new Date(discussion.office_hours_at).toLocaleString()}` : ""}
+            </p>
+          )}
           <h1 className="font-display text-2xl sm:text-3xl font-bold mb-3 leading-tight">{discussion.title}</h1>
           <p className="whitespace-pre-wrap text-brand-navy/80 leading-relaxed">{discussion.body}</p>
+          <div className="mt-5 flex items-center gap-4">
+            <VoteButton count={counts[discussionId] ?? 0} voted={mine.has(discussionId)} disabled={vote.isPending} onClick={() => onVote({ discussionId, replyId: null })} />
+            {signedIn && !isOwner && <ReportButton targetType="discussion" targetId={discussionId} />}
+          </div>
         </article>
 
         <h2 className="font-display text-lg font-bold mt-10 mb-4">
@@ -93,15 +135,25 @@ function ThreadPage() {
         ) : (
           <div className="space-y-3">
             {replies.map((r: any) => (
-              <div key={r.id} className="bg-white border border-brand-navy/5 rounded-2xl p-5">
+              <div key={r.id} className={`bg-white border rounded-2xl p-5 ${r.id === acceptedId ? "border-brand-mint" : "border-brand-navy/5"}`}>
                 <div className="flex items-center gap-3 mb-3">
                   <Avatar name={r.author?.display_name} />
-                  <div>
+                  <div className="flex-1">
                     <p className="font-semibold text-sm">{r.author?.display_name ?? "Anonymous"}</p>
                     <p className="text-xs text-brand-navy/40">{timeAgo(r.created_at)}</p>
                   </div>
+                  {r.id === acceptedId && <AcceptedBadge />}
                 </div>
                 <p className="whitespace-pre-wrap text-brand-navy/80 text-sm leading-relaxed">{r.body}</p>
+                <div className="mt-4 flex flex-wrap items-center gap-4">
+                  <VoteButton count={counts[r.id] ?? 0} voted={mine.has(r.id)} disabled={vote.isPending} onClick={() => onVote({ discussionId: null, replyId: r.id })} />
+                  {isOwner && (
+                    <button onClick={() => accept.mutate(r.id === acceptedId ? null : r.id)} disabled={accept.isPending} className="text-xs font-bold text-brand-mint hover:underline">
+                      {r.id === acceptedId ? "Unmark answer" : "Mark as accepted"}
+                    </button>
+                  )}
+                  {signedIn && userId !== r.user_id && <ReportButton targetType="reply" targetId={r.id} />}
+                </div>
               </div>
             ))}
           </div>
