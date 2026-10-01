@@ -5,6 +5,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { SiteNav } from "@/components/site-nav";
 import { AskCoachButton } from "@/components/ai/ask-coach-button";
+import { ProjectMilestones } from "@/components/project-milestones";
+import { ReportButton } from "@/components/thread-actions";
 import { Heart } from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
 import { getProject, toggleProjectLike, uploadProjectCover, setProjectCover } from "@/lib/api/ecosystem.functions";
@@ -265,6 +267,8 @@ function ProjectPage() {
         {project.description && (
           <div className="prose prose-lg mt-10 whitespace-pre-wrap text-brand-navy/80">{project.description}</div>
         )}
+        <ProjectMilestones projectId={project.id} isOwner={isOwner} />
+        {signedIn && !isOwner && <div className="mt-6"><ReportButton targetType="project" targetId={project.id} /></div>}
       </div>
       <SiteFooter />
     </div>

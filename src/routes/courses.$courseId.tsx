@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getCourse, enrollInCourse, getMyCourseState } from "@/lib/api/learn.functions";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
+import { CohortList, AssignmentBox } from "@/components/course-extras";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -59,8 +60,12 @@ function CoursePage() {
           </div>
         </div>
 
+        <CohortList courseId={data.course.id} signedIn={signedIn} />
         {signedIn ? (
-          <EnrolledPanel courseId={courseId} lessons={data.lessons} quizId={data.quiz?.id ?? null} />
+          <>
+            <EnrolledPanel courseId={courseId} lessons={data.lessons} quizId={data.quiz?.id ?? null} />
+            <AssignmentBox courseId={data.course.id} />
+          </>
         ) : (
           <div className="mt-8 rounded-3xl border border-brand-navy/10 bg-white p-8 text-center">
             <h2 className="font-display text-2xl font-bold">Sign in to start this course</h2>
