@@ -7,6 +7,26 @@ import { SiteFooter } from "@/components/site-footer";
 import { listProjects, createProject, uploadProjectCover } from "@/lib/api/ecosystem.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { Trophy } from "lucide-react";
+import { getFeaturedProject } from "@/lib/api/milestones.functions";
+
+function FeaturedProject() {
+  const fn = useServerFn(getFeaturedProject);
+  const { data: p } = useQuery({ queryKey: ["featured-project"], queryFn: () => fn(), staleTime: 10 * 60_000 });
+  if (!p) return null;
+  return (
+    <Link to="/innovate/$projectSlug" params={{ projectSlug: p.slug }} className="mb-10 flex flex-col md:flex-row gap-6 rounded-3xl bg-brand-navy text-white p-6 md:p-8 overflow-hidden hover:opacity-95">
+      {p.cover_url && <img src={p.cover_url} alt="" className="md:w-72 h-44 object-cover rounded-2xl" />}
+      <div className="flex-1">
+        <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-brand-mint mb-3"><Trophy className="size-4" aria-hidden /> Project of the week</p>
+        <h2 className="font-display text-3xl font-bold leading-tight">{p.title}</h2>
+        <p className="mt-2 text-white/70">{p.summary}</p>
+        {p.author?.display_name && <p className="mt-4 text-sm text-white/50">by {p.author.display_name}</p>}
+      </div>
+    </Link>
+  );
+}
 
 const projectsQuery = queryOptions({
   queryKey: ["projects", "all"],
@@ -64,6 +84,7 @@ function InnovatePage() {
       </header>
 
       <div className="px-6 max-w-7xl mx-auto pb-24">
+        <FeaturedProject />
         {projects.length === 0 ? (
           <div className="py-20 text-center">
             <p className="text-brand-navy/50 mb-4">No projects yet — be the first to ship.</p>

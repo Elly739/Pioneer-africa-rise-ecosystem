@@ -50,9 +50,10 @@ const navItems = [
   { to: "/admin/invites" as const, label: "Invites", roles: ["admin"] },
   { to: "/admin/announcements" as const, label: "Announcements", roles: ["admin"] },
   { to: "/admin/content" as const, label: "Content", roles: ["admin", "moderator"] },
+  { to: "/admin/reports" as const, label: "Reports", roles: ["admin", "moderator"] },
   { to: "/admin/blog" as const, label: "Articles", roles: ["admin", "partner"] },
-
   { to: "/admin/opportunities" as const, label: "Opportunities", roles: ["admin", "partner"] },
+  { to: "/admin/applicants" as const, label: "Applicants", roles: ["admin", "partner"] },
   { to: "/admin/courses" as const, label: "Courses", roles: ["admin", "teacher"] },
 ];
 
