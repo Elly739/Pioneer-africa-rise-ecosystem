@@ -43,6 +43,13 @@ function CertsPage() {
                 <p className="text-[10px] font-bold uppercase tracking-wider text-white/40">Verification code</p>
                 <p className="font-mono text-sm mt-1">{c.code}</p>
               </div>
+              <div className="mt-4 flex flex-wrap gap-2 relative">
+                <Link to="/verify" search={{ code: c.code }} className="px-4 py-2 rounded-full bg-brand-orange text-white text-xs font-bold">View & download</Link>
+                <button
+                  onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/verify?code=${c.code}`); }}
+                  className="px-4 py-2 rounded-full border border-white/20 text-xs font-bold"
+                >Copy share link</button>
+              </div>
             </div>
           ))}
         </div>
