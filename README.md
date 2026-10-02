@@ -13,33 +13,49 @@ Live: <https://pioneer-africa-hub.lovable.app>
 ### Learn
 - Courses focused on AI, responsible AI, innovation, and building for Africa.
 - Lessons (GFM markdown), quizzes with explanations, XP, levels, streaks, and certificates.
+- **Cohorts** — scheduled course runs with join-by deadlines; learners enrol in a run.
+- **AI-graded assignments** — one open-response assignment per course, graded by AI with a score and feedback.
+- **Certificates** — each certificate has a verification code, a public check page at `/verify`, and a share link.
 
 ### Build
 - **Innovation Hub** — public project showcase with cover images, likes, comments, and collaboration requests.
+- **Project milestones** — owners post progress updates on a timeline on each project page.
+- **Project of the week** — the most-liked project with recent activity is featured on the hub.
 - **Challenges** — team-based competitions: team formation, file submissions, community-gated voting, and winner selection.
 - **Portfolio** — headline, university, skills, links, and an auto-computed **Innovation Score** (projects, likes, certificates, community activity).
 
 ### Get discovered
 - **Career Bridge** — opportunity board covering jobs, internships, hackathons, fellowships, grants and scholarships, with search, location/remote/tag filters, deadline countdowns, saved opportunities, and a "Matched for you" strip.
 - **Apply in-app** — apply with notes and auto-fill from one of your existing projects.
+- **AI cover note** — one-click tailored cover note per opportunity, grounded in the learner's profile.
 - **Applications tracker** — Kanban-style pipeline of every application and its status.
+- **Partner applicant review** — partners triage applicants to their own listings (submitted → under review → interview → offer → rejected).
 - **Talent directory** — partners and admins can search student builders by skill and score.
-- **Public profiles** at `/u/:userId` with score, projects, and links.
+- **Public profiles** at `/u/:userId` with score, projects, badges, and links.
 
 ### Community & content
 - Discussion **Spaces** (General, Learning, Careers, Building, Mentorship) with replies, participant counts, and activity signals.
+- **Upvotes** on posts and replies; the discussion author can mark an **accepted answer**, which floats to the top.
+- **Mentor office hours** — mentors can post scheduled office-hours threads.
+- **Reporting** — members can report projects, posts, and replies into the moderation queue.
 - **Blog** — articles on innovation, tech, and African startups. Authoring is restricted to admins and partners via the Articles workspace.
+
+### Gamification
+- **Badges** for real milestones — first project, first certificate, first discussion, first reply, first challenge submission, 10 likes, first interview, first offer, 7-day streak — each granting XP and a notification.
+- **Leaderboard** (`/leaderboard`) — public ranking by Innovation Score with top-3 medals.
 
 ### AI
 - **AI Mentor** (`/mentor`) — learning coach: roadmaps, skill gaps, concept breakdowns.
 - **AI Career Advisor** (`/advisor`) — CVs, interviews, internships, scholarships.
 - Both are **grounded** in the learner's real profile, projects, courses, certificates, and the live opportunity list — conversations are persisted.
+- Streaming chat, tool actions (enrol, save, plan), coach memory, voice input, and English/Kiswahili/Français.
 
 ### Platform
 - **Onboarding wizard** (`/welcome`) — interests, skill level, primary goal → drives the "For You" recommendations.
 - **Notifications** — real-time bell for project likes, discussion replies, application status changes, challenge updates, and admin announcements.
 - **Role-aware dashboards** — learner, teacher, partner, moderator, and admin bands.
-- **Admin hub** — users, role requests, invites, content moderation, opportunities, courses, articles, announcements.
+- **Admin hub** — users, role requests, invites, content moderation, opportunities, courses, articles, announcements, **reports queue**, **funnel analytics** (signup → onboarded → enrolled → project shipped → applied).
+- **Verified partners** — admin-verified badge on partner profiles.
 - **MCP server** — read-only agent tools for courses, opportunities, challenges, and discussions.
 - **SEO** — per-route metadata, dynamic sitemap, robots.txt.
 
@@ -71,10 +87,14 @@ src/
     __root.tsx               app shell
     index.tsx                landing page
     careers.tsx              opportunity board
-    innovate.tsx             innovation hub
+    innovate.index.tsx       innovation hub
+    innovate.$projectSlug.tsx  project page (milestones, report)
     challenges.tsx           challenge board
-    community.tsx            discussion spaces
+    community.index.tsx      discussion spaces
+    community.$discussionId.tsx  thread (votes, accepted answer, report)
     blog.index.tsx           articles
+    leaderboard.tsx          public leaderboard
+    verify.tsx               public certificate verification
     u.$userId.tsx            public profile
     _authenticated/          gated subtree (auth required)
       dashboard.tsx          role-aware dashboard
@@ -85,7 +105,7 @@ src/
       talent.tsx             talent directory (partner/admin)
       certificates.tsx, cv.tsx, lessons.$lessonId.tsx, quizzes.$quizId.tsx
       request-access.tsx, invite.$token.tsx
-      admin.*.tsx            admin workspaces
+      admin.*.tsx            admin workspaces (users, reports, applicants, analytics, blog, …)
   components/                shared UI
   lib/api/*.functions.ts     server functions (createServerFn)
   lib/mcp/                   MCP server + tools
