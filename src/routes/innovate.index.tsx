@@ -33,7 +33,7 @@ const projectsQuery = queryOptions({
   queryFn: () => listProjects(),
 });
 
-export const Route = createFileRoute("/innovate")({
+export const Route = createFileRoute("/innovate/")({
   head: () => ({
     meta: [
       { title: "Innovation Hub — Pioneer Africa Hub" },
