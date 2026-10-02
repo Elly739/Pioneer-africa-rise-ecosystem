@@ -14,7 +14,7 @@ const discussionsQuery = queryOptions({
   queryFn: () => listDiscussions(),
 });
 
-export const Route = createFileRoute("/community")({
+export const Route = createFileRoute("/community/")({
   head: () => ({
     meta: [
       { title: "Community — Pioneer Africa Hub" },

@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
     }
     return { user, roles: Array.from(roleSet) as AppRole[] };
   },
-  errorComponent: AdminError,
+  errorComponent: AdminError as never,
   notFoundComponent: AdminNotFound,
   component: AdminLayout,
 });
