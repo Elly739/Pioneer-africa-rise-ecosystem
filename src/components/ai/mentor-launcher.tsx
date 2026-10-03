@@ -1,8 +1,9 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { BotMessageSquare } from "lucide-react";
 
 export function MentorLauncher({ signedIn }: { signedIn: boolean }) {
-  if (!signedIn) return null;
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  if (!signedIn || pathname === "/mentor") return null;
 
   return (
     <div className="fixed bottom-5 right-4 z-40 flex items-center gap-3 sm:bottom-7 sm:right-7">
