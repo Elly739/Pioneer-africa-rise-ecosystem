@@ -69,19 +69,34 @@ function PortfolioPage() {
   }, [data]);
 
   const save = useMutation({
-    mutationFn: () =>
-      saveFn({
+    mutationFn: () => {
+      const fixUrl = (u: string) => {
+        const t = u.trim();
+        return t && !/^https?:\/\//i.test(t) ? `https://${t}` : t;
+      };
+      if (form.display_name.trim().length < 2) throw new Error("Please enter your full name (at least 2 letters).");
+      return saveFn({
         data: {
           ...form,
+          display_name: form.display_name.trim(),
+          github_url: fixUrl(form.github_url),
+          linkedin_url: fixUrl(form.linkedin_url),
+          website_url: fixUrl(form.website_url),
           skills,
           open_to: openTo as ("internship" | "job" | "collaboration" | "mentorship")[],
         },
-      }),
+      });
+    },
     onSuccess: () => {
       toast.success("Portfolio updated");
       qc.invalidateQueries({ queryKey: ["my-portfolio"] });
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not save"),
+    onError: (e) => {
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.trim().startsWith("[") || msg.includes("invalid_")) {
+        toast.error("Some fields look off — check your links are valid web addresses and text isn't too long.");
+      } else toast.error(msg || "Could not save");
+    },
   });
 
   const respond = useMutation({
