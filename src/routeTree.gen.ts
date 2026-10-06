@@ -26,6 +26,7 @@ import { Route as AuthenticatedApplicationsRouteImport } from './routes/_authent
 import { Route as AuthenticatedCertificatesRouteImport } from './routes/_authenticated/certificates'
 import { Route as AuthenticatedCvRouteImport } from './routes/_authenticated/cv'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedInboxRouteImport } from './routes/_authenticated/inbox'
 import { Route as AuthenticatedMentorRouteImport } from './routes/_authenticated/mentor'
 import { Route as AuthenticatedPortfolioRouteImport } from './routes/_authenticated/portfolio'
 import { Route as AuthenticatedRequestAccessRouteImport } from './routes/_authenticated/request-access'
@@ -56,6 +57,7 @@ import { Route as AuthenticatedAdminOpportunitiesRouteImport } from './routes/_a
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
 import { Route as AuthenticatedAdminRequestsRouteImport } from './routes/_authenticated/admin.requests'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
+import { Route as AuthenticatedInboxConversationIdRouteImport } from './routes/_authenticated/inbox.$conversationId'
 import { Route as AuthenticatedInviteTokenRouteImport } from './routes/_authenticated/invite.$token'
 import { Route as AuthenticatedLessonsLessonIdRouteImport } from './routes/_authenticated/lessons.$lessonId'
 import { Route as AuthenticatedQuizzesQuizIdRouteImport } from './routes/_authenticated/quizzes.$quizId'
@@ -146,6 +148,11 @@ const AuthenticatedCvRoute = AuthenticatedCvRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedInboxRoute = AuthenticatedInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMentorRoute = AuthenticatedMentorRouteImport.update({
@@ -309,6 +316,12 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedInboxConversationIdRoute =
+  AuthenticatedInboxConversationIdRouteImport.update({
+    id: '/$conversationId',
+    path: '/$conversationId',
+    getParentRoute: () => AuthenticatedInboxRoute,
+  } as any)
 const AuthenticatedInviteTokenRoute =
   AuthenticatedInviteTokenRouteImport.update({
     id: '/invite/$token',
@@ -345,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/certificates': typeof AuthenticatedCertificatesRoute
   '/cv': typeof AuthenticatedCvRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/inbox': typeof AuthenticatedInboxRouteWithChildren
   '/mentor': typeof AuthenticatedMentorRoute
   '/portfolio': typeof AuthenticatedPortfolioRoute
   '/request-access': typeof AuthenticatedRequestAccessRoute
@@ -374,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/inbox/$conversationId': typeof AuthenticatedInboxConversationIdRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
   '/lessons/$lessonId': typeof AuthenticatedLessonsLessonIdRoute
   '/quizzes/$quizId': typeof AuthenticatedQuizzesQuizIdRoute
@@ -395,6 +410,7 @@ export interface FileRoutesByTo {
   '/certificates': typeof AuthenticatedCertificatesRoute
   '/cv': typeof AuthenticatedCvRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/inbox': typeof AuthenticatedInboxRouteWithChildren
   '/mentor': typeof AuthenticatedMentorRoute
   '/portfolio': typeof AuthenticatedPortfolioRoute
   '/request-access': typeof AuthenticatedRequestAccessRoute
@@ -424,6 +440,7 @@ export interface FileRoutesByTo {
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/inbox/$conversationId': typeof AuthenticatedInboxConversationIdRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
   '/lessons/$lessonId': typeof AuthenticatedLessonsLessonIdRoute
   '/quizzes/$quizId': typeof AuthenticatedQuizzesQuizIdRoute
@@ -448,6 +465,7 @@ export interface FileRoutesById {
   '/_authenticated/certificates': typeof AuthenticatedCertificatesRoute
   '/_authenticated/cv': typeof AuthenticatedCvRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/inbox': typeof AuthenticatedInboxRouteWithChildren
   '/_authenticated/mentor': typeof AuthenticatedMentorRoute
   '/_authenticated/portfolio': typeof AuthenticatedPortfolioRoute
   '/_authenticated/request-access': typeof AuthenticatedRequestAccessRoute
@@ -477,6 +495,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/_authenticated/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/inbox/$conversationId': typeof AuthenticatedInboxConversationIdRoute
   '/_authenticated/invite/$token': typeof AuthenticatedInviteTokenRoute
   '/_authenticated/lessons/$lessonId': typeof AuthenticatedLessonsLessonIdRoute
   '/_authenticated/quizzes/$quizId': typeof AuthenticatedQuizzesQuizIdRoute
@@ -501,6 +520,7 @@ export interface FileRouteTypes {
     | '/certificates'
     | '/cv'
     | '/dashboard'
+    | '/inbox'
     | '/mentor'
     | '/portfolio'
     | '/request-access'
@@ -530,6 +550,7 @@ export interface FileRouteTypes {
     | '/admin/reports'
     | '/admin/requests'
     | '/admin/users'
+    | '/inbox/$conversationId'
     | '/invite/$token'
     | '/lessons/$lessonId'
     | '/quizzes/$quizId'
@@ -551,6 +572,7 @@ export interface FileRouteTypes {
     | '/certificates'
     | '/cv'
     | '/dashboard'
+    | '/inbox'
     | '/mentor'
     | '/portfolio'
     | '/request-access'
@@ -580,6 +602,7 @@ export interface FileRouteTypes {
     | '/admin/reports'
     | '/admin/requests'
     | '/admin/users'
+    | '/inbox/$conversationId'
     | '/invite/$token'
     | '/lessons/$lessonId'
     | '/quizzes/$quizId'
@@ -603,6 +626,7 @@ export interface FileRouteTypes {
     | '/_authenticated/certificates'
     | '/_authenticated/cv'
     | '/_authenticated/dashboard'
+    | '/_authenticated/inbox'
     | '/_authenticated/mentor'
     | '/_authenticated/portfolio'
     | '/_authenticated/request-access'
@@ -632,6 +656,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/reports'
     | '/_authenticated/admin/requests'
     | '/_authenticated/admin/users'
+    | '/_authenticated/inbox/$conversationId'
     | '/_authenticated/invite/$token'
     | '/_authenticated/lessons/$lessonId'
     | '/_authenticated/quizzes/$quizId'
@@ -783,6 +808,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/inbox': {
+      id: '/_authenticated/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof AuthenticatedInboxRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/mentor': {
@@ -995,6 +1027,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/inbox/$conversationId': {
+      id: '/_authenticated/inbox/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/inbox/$conversationId'
+      preLoaderRoute: typeof AuthenticatedInboxConversationIdRouteImport
+      parentRoute: typeof AuthenticatedInboxRoute
+    }
     '/_authenticated/invite/$token': {
       id: '/_authenticated/invite/$token'
       path: '/invite/$token'
@@ -1052,6 +1091,17 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
+interface AuthenticatedInboxRouteChildren {
+  AuthenticatedInboxConversationIdRoute: typeof AuthenticatedInboxConversationIdRoute
+}
+
+const AuthenticatedInboxRouteChildren: AuthenticatedInboxRouteChildren = {
+  AuthenticatedInboxConversationIdRoute: AuthenticatedInboxConversationIdRoute,
+}
+
+const AuthenticatedInboxRouteWithChildren =
+  AuthenticatedInboxRoute._addFileChildren(AuthenticatedInboxRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedAdvisorRoute: typeof AuthenticatedAdvisorRoute
@@ -1059,6 +1109,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCertificatesRoute: typeof AuthenticatedCertificatesRoute
   AuthenticatedCvRoute: typeof AuthenticatedCvRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedInboxRoute: typeof AuthenticatedInboxRouteWithChildren
   AuthenticatedMentorRoute: typeof AuthenticatedMentorRoute
   AuthenticatedPortfolioRoute: typeof AuthenticatedPortfolioRoute
   AuthenticatedRequestAccessRoute: typeof AuthenticatedRequestAccessRoute
@@ -1076,6 +1127,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCertificatesRoute: AuthenticatedCertificatesRoute,
   AuthenticatedCvRoute: AuthenticatedCvRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedInboxRoute: AuthenticatedInboxRouteWithChildren,
   AuthenticatedMentorRoute: AuthenticatedMentorRoute,
   AuthenticatedPortfolioRoute: AuthenticatedPortfolioRoute,
   AuthenticatedRequestAccessRoute: AuthenticatedRequestAccessRoute,

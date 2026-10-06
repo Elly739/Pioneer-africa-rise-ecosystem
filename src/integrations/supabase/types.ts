@@ -623,6 +623,56 @@ export type Database = {
         }
         Relationships: []
       }
+      conversation_participants: {
+        Row: {
+          conversation_id: string
+          last_read_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          last_read_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          last_read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          last_message_at: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: []
+      }
       course_assignments: {
         Row: {
           course_id: string
@@ -1021,6 +1071,38 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
             referencedColumns: ["id"]
           },
         ]
@@ -1627,6 +1709,19 @@ export type Database = {
         Args: { _amount: number; _user_id: string }
         Returns: undefined
       }
+      conversation_summaries: {
+        Args: never
+        Returns: {
+          conversation_id: string
+          last_message_at: string
+          last_message_body: string
+          last_message_sender_id: string
+          other_avatar: string
+          other_name: string
+          other_user_id: string
+          unread_count: number
+        }[]
+      }
       fanout_announcement: {
         Args: { _announcement_id: string }
         Returns: number
@@ -1641,6 +1736,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_conversation_participant: {
+        Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
       }
       search_talent: {
@@ -1665,6 +1764,10 @@ export type Database = {
           university: string
           user_id: string
         }[]
+      }
+      start_or_open_conversation: {
+        Args: { _other_user: string }
+        Returns: string
       }
       verify_certificate: {
         Args: { _code: string }
@@ -1696,6 +1799,7 @@ export type Database = {
         | "collab_request"
         | "collab_response"
         | "talent_message"
+        | "direct_message"
       opportunity_type:
         | "internship"
         | "job"
@@ -1852,6 +1956,7 @@ export const Constants = {
         "collab_request",
         "collab_response",
         "talent_message",
+        "direct_message",
       ],
       opportunity_type: [
         "internship",

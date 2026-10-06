@@ -1,11 +1,12 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Flame } from "lucide-react";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { Flame, MessageSquare } from "lucide-react";
 import { useSuspenseQuery, queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { getPublicProfile, isFollowing, toggleFollow } from "@/lib/api/social.functions";
+import { startOrOpenConversation } from "@/lib/api/messages.functions";
 import { getUserBadges } from "@/lib/api/gamification.functions";
 import { BadgeGrid } from "@/components/badge-grid";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,6 +71,14 @@ function ProfilePage() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
   });
 
+  const navigate = useNavigate();
+  const messageFn = useServerFn(startOrOpenConversation);
+  const message = useMutation({
+    mutationFn: () => messageFn({ data: { userId } }),
+    onSuccess: (r) => navigate({ to: "/inbox/$conversationId", params: { conversationId: r.conversationId } }),
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not open a conversation"),
+  });
+
   if (!data) return null;
   const { profile, stats, innovation, projects, discussions, certificates, followerCount, followingCount } = data;
   const skills = (profile.skills as string[] | null) ?? [];
@@ -125,13 +134,22 @@ function ProfilePage() {
             )}
           </div>
           {!isSelf && meId && (
-            <button
-              onClick={() => follow.mutate()}
-              disabled={follow.isPending}
-              className={`px-6 py-2.5 rounded-full font-bold text-sm ${
-                followingQ.data?.following ? "bg-brand-clay text-brand-navy" : "bg-brand-navy text-white"
-              }`}
-            >{followingQ.data?.following ? "Following" : "Follow"}</button>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                onClick={() => message.mutate()}
+                disabled={message.isPending}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm border border-brand-navy/15 text-brand-navy hover:border-brand-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+              >
+                <MessageSquare className="size-4" aria-hidden /> {message.isPending ? "Opening…" : "Message"}
+              </button>
+              <button
+                onClick={() => follow.mutate()}
+                disabled={follow.isPending}
+                className={`px-6 py-2.5 rounded-full font-bold text-sm ${
+                  followingQ.data?.following ? "bg-brand-clay text-brand-navy" : "bg-brand-navy text-white"
+                }`}
+              >{followingQ.data?.following ? "Following" : "Follow"}</button>
+            </div>
           )}
         </div>
 

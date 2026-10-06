@@ -104,9 +104,24 @@ function ThreadPage() {
 
         <article className="mt-5 bg-white border border-brand-navy/5 rounded-3xl p-6 sm:p-8">
           <div className="flex items-center gap-3 mb-4">
-            <Avatar name={discussion.author?.display_name} />
+            <Link
+              to="/u/$userId"
+              params={{ userId: discussion.user_id }}
+              aria-label={`View ${discussion.author?.display_name ?? "this member"}'s profile`}
+              className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Avatar name={discussion.author?.display_name} />
+            </Link>
             <div>
-              <p className="font-semibold text-sm">{discussion.author?.display_name ?? "Anonymous"}</p>
+              <p className="font-semibold text-sm">
+                <Link
+                  to="/u/$userId"
+                  params={{ userId: discussion.user_id }}
+                  className="hover:text-brand-orange rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {discussion.author?.display_name ?? "Anonymous"}
+                </Link>
+              </p>
               <p className="text-xs text-brand-navy/40">{timeAgo(discussion.created_at)} · <span className="uppercase tracking-wider font-bold text-brand-navy/50">{discussion.topic}</span></p>
             </div>
           </div>
@@ -137,9 +152,24 @@ function ThreadPage() {
             {replies.map((r: any) => (
               <div key={r.id} className={`bg-white border rounded-2xl p-5 ${r.id === acceptedId ? "border-brand-mint" : "border-brand-navy/5"}`}>
                 <div className="flex items-center gap-3 mb-3">
-                  <Avatar name={r.author?.display_name} />
+                  <Link
+                    to="/u/$userId"
+                    params={{ userId: r.user_id }}
+                    aria-label={`View ${r.author?.display_name ?? "this member"}'s profile`}
+                    className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <Avatar name={r.author?.display_name} />
+                  </Link>
                   <div className="flex-1">
-                    <p className="font-semibold text-sm">{r.author?.display_name ?? "Anonymous"}</p>
+                    <p className="font-semibold text-sm">
+                      <Link
+                        to="/u/$userId"
+                        params={{ userId: r.user_id }}
+                        className="hover:text-brand-orange rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        {r.author?.display_name ?? "Anonymous"}
+                      </Link>
+                    </p>
                     <p className="text-xs text-brand-navy/40">{timeAgo(r.created_at)}</p>
                   </div>
                   {r.id === acceptedId && <AcceptedBadge />}

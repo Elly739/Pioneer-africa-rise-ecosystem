@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const TargetType = z.enum(["project", "discussion", "reply"]);
+const TargetType = z.enum(["project", "discussion", "reply", "conversation"]);
 
 export const reportContent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -47,7 +47,7 @@ export const listReports = createServerFn({ method: "GET" })
     if (rows.length === 0) return [];
 
     const byType = (t: string) => rows.filter((r) => r.target_type === t).map((r) => r.target_id);
-    const [projects, discussions, replies, profiles] = await Promise.all([
+    const [projects, discussions, replies, profiles, participants] = await Promise.all([
       supabaseAdmin.from("projects").select("id,title,slug").in("id", byType("project")),
       supabaseAdmin.from("discussions").select("id,title").in("id", byType("discussion")),
       supabaseAdmin.from("discussion_replies").select("id,body,discussion_id").in("id", byType("reply")),
@@ -55,6 +55,10 @@ export const listReports = createServerFn({ method: "GET" })
         .from("profiles")
         .select("id,display_name")
         .in("id", Array.from(new Set(rows.map((r) => r.reporter_id)))),
+      supabaseAdmin
+        .from("conversation_participants")
+        .select("conversation_id,user_id")
+        .in("conversation_id", byType("conversation")),
     ]);
 
     const pMap = new Map((projects.data ?? []).map((p) => [p.id, p]));
@@ -62,14 +66,35 @@ export const listReports = createServerFn({ method: "GET" })
     const rMap = new Map((replies.data ?? []).map((r) => [r.id, r]));
     const profMap = new Map((profiles.data ?? []).map((p) => [p.id, p]));
 
+    const memberIds = Array.from(new Set((participants ?? []).map((p) => p.user_id)));
+    const names = memberIds.length
+      ? ((await supabaseAdmin.from("profiles").select("id,display_name").in("id", memberIds)).data ?? [])
+      : [];
+    const nameMap = new Map(names.map((p) => [p.id, p.display_name ?? "Pioneer member"]));
+    const convMembers = new Map<string, string[]>();
+    for (const p of participants ?? []) {
+      convMembers.set(p.conversation_id, [
+        ...(convMembers.get(p.conversation_id) ?? []),
+        nameMap.get(p.user_id) ?? "Pioneer member",
+      ]);
+    }
+
     return rows.map((r) => {
       const project = r.target_type === "project" ? pMap.get(r.target_id) : null;
       const discussion = r.target_type === "discussion" ? dMap.get(r.target_id) : null;
       const reply = r.target_type === "reply" ? rMap.get(r.target_id) : null;
+      const conversation = r.target_type === "conversation" ? r.target_id : null;
+      const who = conversation ? convMembers.get(conversation) : undefined;
       return {
         ...r,
         reporter: profMap.get(r.reporter_id)?.display_name ?? "Someone",
-        label: project?.title ?? discussion?.title ?? reply?.body?.slice(0, 90) ?? "Removed content",
+        label:
+          project?.title ??
+          discussion?.title ??
+          reply?.body?.slice(0, 90) ??
+          (conversation
+            ? `Private conversation between ${who && who.length ? who.join(" and ") : "two members"}`
+            : "Removed content"),
         link: project
           ? `/innovate/${project.slug}`
           : discussion
@@ -77,6 +102,7 @@ export const listReports = createServerFn({ method: "GET" })
             : reply
               ? `/community/${reply.discussion_id}`
               : null,
+        conversationId: conversation,
       };
     });
   });
@@ -106,7 +132,9 @@ export const resolveReport = createServerFn({ method: "POST" })
           ? "projects"
           : report.target_type === "discussion"
             ? "discussions"
-            : "discussion_replies";
+            : report.target_type === "conversation"
+              ? "conversations"
+              : "discussion_replies";
       await supabaseAdmin.from(table).delete().eq("id", report.target_id);
     }
 
