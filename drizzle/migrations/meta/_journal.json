@@ -8,6 +8,13 @@
       "when": 1791282309553,
       "tag": "0000_create_direct_messaging",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791282351700,
+      "tag": "0001_stream_new_messages",
+      "breakpoints": true
     }
   ]
 }
