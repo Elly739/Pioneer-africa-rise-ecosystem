@@ -93,9 +93,15 @@ function PortfolioPage() {
     },
     onError: (e) => {
       const msg = e instanceof Error ? e.message : "";
-      if (msg.trim().startsWith("[") || msg.includes("invalid_")) {
-        toast.error("Some fields look off — check your links are valid web addresses and text isn't too long.");
-      } else toast.error(msg || "Could not save");
+      try {
+        const issues = JSON.parse(msg) as { path?: string[]; code?: string; maximum?: number }[];
+        const names: Record<string, string> = { display_name: "Full name", headline: "Headline", bio: "About you", country: "Country", university: "University", study_year: "Year of study", github_url: "GitHub", linkedin_url: "LinkedIn", website_url: "Website", skills: "Skills" };
+        const i = issues[0];
+        const f = names[i?.path?.[0] ?? ""] ?? "One field";
+        toast.error(i?.code === "too_big" ? `${f} is too long (max ${i.maximum} characters).` : `${f} doesn't look right — please check it.`);
+      } catch {
+        toast.error(msg || "Could not save");
+      }
     },
   });
 
