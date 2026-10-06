@@ -171,27 +171,44 @@ function CommunityPage() {
                 const meta = TOPICS.find((x) => x.id === t.topic);
                 const initials = (t.author?.display_name ?? "A").slice(0, 2).toUpperCase();
                 return (
-                  <Link
+                  <article
                     key={t.id}
-                    to="/community/$discussionId"
-                    params={{ discussionId: t.id }}
-                    className="block bg-white border border-brand-navy/5 rounded-2xl p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
+                    className="bg-white border border-brand-navy/5 rounded-2xl p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="size-10 shrink-0 rounded-full bg-brand-orange/15 text-brand-orange font-bold flex items-center justify-center text-sm">
+                      <Link
+                        to="/u/$userId"
+                        params={{ userId: t.user_id }}
+                        aria-label={`View ${t.author?.display_name ?? "this member"}'s profile`}
+                        className="size-10 shrink-0 rounded-full bg-brand-orange/15 text-brand-orange font-bold flex items-center justify-center text-sm hover:ring-2 hover:ring-brand-orange/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
                         {initials}
-                      </div>
+                      </Link>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-brand-clay text-brand-navy/70 uppercase font-bold tracking-wider">
                             {meta?.Icon ? <meta.Icon className="size-3" aria-hidden /> : null}
                             {meta?.label ?? t.topic}
                           </span>
-                          <span className="text-xs text-brand-navy/50">{t.author?.display_name ?? "Anonymous"}</span>
+                          <Link
+                            to="/u/$userId"
+                            params={{ userId: t.user_id }}
+                            className="text-xs font-semibold text-brand-navy/50 hover:text-brand-orange rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          >
+                            {t.author?.display_name ?? "Anonymous"}
+                          </Link>
                           <span className="text-xs text-brand-navy/30">·</span>
                           <span className="text-xs text-brand-navy/40">{timeAgo(t.last_activity ?? t.created_at)}</span>
                         </div>
-                        <h3 className="font-display text-lg font-bold leading-snug mb-1">{t.title}</h3>
+                        <h3 className="font-display text-lg font-bold leading-snug mb-1">
+                          <Link
+                            to="/community/$discussionId"
+                            params={{ discussionId: t.id }}
+                            className="hover:text-brand-orange rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          >
+                            {t.title}
+                          </Link>
+                        </h3>
                         <p className="text-sm text-brand-navy/60 line-clamp-2">{t.body}</p>
                         <div className="mt-3 flex items-center gap-4 text-xs text-brand-navy/50">
                           <span className="flex items-center gap-1.5">
@@ -205,7 +222,7 @@ function CommunityPage() {
                         </div>
                       </div>
                     </div>
-                  </Link>
+                  </article>
                 );
               })}
             </div>
