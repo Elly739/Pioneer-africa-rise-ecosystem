@@ -23,10 +23,10 @@ export const updateMyPortfolio = createServerFn({ method: "POST" })
   .inputValidator(
     z.object({
       display_name: z.string().min(2).max(80),
-      headline: z.string().max(120).optional().default(""),
-      bio: z.string().max(600).optional().default(""),
+      headline: z.string().max(200).optional().default(""),
+      bio: z.string().max(1500).optional().default(""),
       country: z.string().max(60).optional().default(""),
-      university: z.string().max(120).optional().default(""),
+      university: z.string().max(160).optional().default(""),
       study_year: z.string().max(40).optional().default(""),
       skills: z.array(z.string().min(1).max(40)).max(20).default([]),
       github_url: urlOrEmpty,
