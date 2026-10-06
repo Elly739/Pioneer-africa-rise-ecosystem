@@ -26,7 +26,7 @@ export function AcceptedBadge() {
   );
 }
 
-export function ReportButton({ targetType, targetId }: { targetType: "project" | "discussion" | "reply"; targetId: string }) {
+export function ReportButton({ targetType, targetId }: { targetType: "project" | "discussion" | "reply" | "conversation"; targetId: string }) {
   const fn = useServerFn(reportContent);
   const [busy, setBusy] = useState(false);
   return (
