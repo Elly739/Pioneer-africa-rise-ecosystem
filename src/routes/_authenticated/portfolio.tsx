@@ -141,33 +141,33 @@ function PortfolioPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className={label} htmlFor="pf-name">Full name</label>
-                  <input id="pf-name" className={field} value={form.display_name} onChange={(e) => setForm({ ...form, display_name: e.target.value })} />
+                  <input id="pf-name" maxLength={80} className={field} value={form.display_name} onChange={(e) => setForm({ ...form, display_name: e.target.value })} />
                 </div>
                 <div className="space-y-1.5">
                   <label className={label} htmlFor="pf-country">Country</label>
-                  <input id="pf-country" className={field} placeholder="Kenya" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} />
+                  <input id="pf-country" maxLength={60} className={field} placeholder="Kenya" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className={label} htmlFor="pf-headline">Headline</label>
-                <input id="pf-headline" className={field} placeholder="Final-year CS student building AI tools for smallholder farmers" value={form.headline} onChange={(e) => setForm({ ...form, headline: e.target.value })} />
+                <input id="pf-headline" maxLength={200} className={field} placeholder="Final-year CS student building AI tools for smallholder farmers" value={form.headline} onChange={(e) => setForm({ ...form, headline: e.target.value })} />
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className={label} htmlFor="pf-uni">University / institution</label>
-                  <input id="pf-uni" className={field} value={form.university} onChange={(e) => setForm({ ...form, university: e.target.value })} />
+                  <input id="pf-uni" maxLength={160} className={field} value={form.university} onChange={(e) => setForm({ ...form, university: e.target.value })} />
                 </div>
                 <div className="space-y-1.5">
                   <label className={label} htmlFor="pf-year">Year of study</label>
-                  <input id="pf-year" className={field} placeholder="Year 3" value={form.study_year} onChange={(e) => setForm({ ...form, study_year: e.target.value })} />
+                  <input id="pf-year" maxLength={40} className={field} placeholder="Year 3" value={form.study_year} onChange={(e) => setForm({ ...form, study_year: e.target.value })} />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <label className={label} htmlFor="pf-bio">About you</label>
-                <textarea id="pf-bio" rows={4} className="w-full p-4 rounded-xl bg-brand-bg border border-brand-navy/10 text-sm focus:outline-none focus:border-brand-orange" value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
+                <textarea id="pf-bio" maxLength={1500} rows={4} className="w-full p-4 rounded-xl bg-brand-bg border border-brand-navy/10 text-sm focus:outline-none focus:border-brand-orange" value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
               </div>
 
               <div className="space-y-2">
