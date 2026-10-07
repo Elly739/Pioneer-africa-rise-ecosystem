@@ -8,6 +8,7 @@ import {
   Flame,
   Gauge,
   GraduationCap,
+  Inbox,
   LayoutDashboard,
   Lightbulb,
   LogOut,
@@ -25,6 +26,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationBell } from "@/components/notification-bell";
 import { getMyStats } from "@/lib/api/stats.functions";
+import { getUnreadMessageCount } from "@/lib/api/messages.functions";
 import type { Database } from "@/integrations/supabase/types";
 import pioneerLogo from "@/assets/pioneer-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
@@ -80,6 +82,16 @@ export function SiteNav() {
     enabled: signedIn,
     staleTime: 60_000,
   });
+
+  const unreadFn = useServerFn(getUnreadMessageCount);
+  const { data: unreadData } = useQuery({
+    queryKey: ["unread-messages"],
+    queryFn: () => unreadFn(),
+    enabled: signedIn,
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
+  const unread = unreadData?.unread ?? 0;
 
   const { data: userRoles } = useQuery({
     queryKey: ["my-roles"],
@@ -152,6 +164,18 @@ export function SiteNav() {
                 </Link>
               )}
               <NotificationBell />
+              <Link
+                to="/inbox"
+                aria-label={unread > 0 ? `Inbox, ${unread} unread messages` : "Inbox"}
+                className="relative hidden h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:flex"
+              >
+                <Inbox className="size-4" aria-hidden />
+                {unread > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center">
+                    {unread > 9 ? "9+" : unread}
+                  </span>
+                )}
+              </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="hidden h-10 items-center gap-2 border-l border-border pl-3 pr-1 sm:flex" aria-label="Open account menu">
@@ -166,7 +190,16 @@ export function SiteNav() {
                   <DropdownMenuItem asChild className="rounded-md py-2.5"><Link to="/dashboard"><LayoutDashboard aria-hidden />Dashboard</Link></DropdownMenuItem>
                   <DropdownMenuItem asChild className="rounded-md py-2.5"><Link to="/portfolio"><UserRound aria-hidden />My portfolio</Link></DropdownMenuItem>
                   <DropdownMenuItem asChild className="rounded-md py-2.5"><Link to="/applications"><BriefcaseBusiness aria-hidden />My applications</Link></DropdownMenuItem>
-                  <DropdownMenuItem asChild className="rounded-md py-2.5"><Link to="/certificates"><FileBadge aria-hidden />Certificates</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild className="rounded-md py-2.5">
+                    <Link to="/inbox">
+                      <Inbox aria-hidden />Inbox
+                      {unread > 0 && (
+                        <span className="ml-auto rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground" aria-label={`${unread} unread messages`}>
+                          {unread}
+                        </span>
+                      )}
+                    </Link>
+                  </DropdownMenuItem>
                   {isPrivileged && <DropdownMenuItem asChild className="rounded-md py-2.5"><Link to="/admin"><ShieldCheck aria-hidden />Workspace</Link></DropdownMenuItem>}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={() => void signOut()} className="rounded-md py-2.5 text-destructive focus:text-destructive"><LogOut aria-hidden />Sign out</DropdownMenuItem>
@@ -204,7 +237,7 @@ export function SiteNav() {
                 <Link to="/portfolio" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">My portfolio</Link>
                 <Link to="/applications" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">My applications</Link>
                 <Link to="/cv" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">My CV</Link>
-                <Link to="/certificates" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">Certificates</Link>
+                <Link to="/inbox" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">Inbox{unread > 0 ? ` (${unread})` : ""}</Link>
                 {userRoles?.some((role) => role === "partner" || role === "admin") && <Link to="/talent" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">Talent directory</Link>}
                 {isPrivileged && <Link to="/admin" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold text-primary">Workspace</Link>}
                 <Button variant="outline" onClick={() => void signOut()} className="mt-2 justify-start sm:col-span-2"><LogOut aria-hidden />Sign out</Button>
