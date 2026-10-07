@@ -128,7 +128,7 @@ function ConversationReview({ conversationId }: { conversationId: string }) {
       {open && data && (
         <div className="mt-3 rounded-xl bg-brand-bg border border-brand-navy/10 p-3 space-y-2 max-h-72 overflow-y-auto">
           <p className="text-[11px] font-bold uppercase tracking-wider text-brand-navy/50">
-            Between {data.members.map((m) => m.name).join(" and ")}
+            Between {data.members.map((m: { id: string; name: string }) => m.name).join(" and ")}
           </p>
           {data.messages.length === 0 && <p className="text-xs text-brand-navy/50">No messages in this conversation.</p>}
           {data.messages.map((msg) => (
