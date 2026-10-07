@@ -190,6 +190,7 @@ export function SiteNav() {
                   <DropdownMenuItem asChild className="rounded-md py-2.5"><Link to="/dashboard"><LayoutDashboard aria-hidden />Dashboard</Link></DropdownMenuItem>
                   <DropdownMenuItem asChild className="rounded-md py-2.5"><Link to="/portfolio"><UserRound aria-hidden />My portfolio</Link></DropdownMenuItem>
                   <DropdownMenuItem asChild className="rounded-md py-2.5"><Link to="/applications"><BriefcaseBusiness aria-hidden />My applications</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild className="rounded-md py-2.5"><Link to="/certificates"><FileBadge aria-hidden />Certificates</Link></DropdownMenuItem>
                   <DropdownMenuItem asChild className="rounded-md py-2.5">
                     <Link to="/inbox">
                       <Inbox aria-hidden />Inbox
@@ -237,6 +238,7 @@ export function SiteNav() {
                 <Link to="/portfolio" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">My portfolio</Link>
                 <Link to="/applications" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">My applications</Link>
                 <Link to="/cv" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">My CV</Link>
+                <Link to="/certificates" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">Certificates</Link>
                 <Link to="/inbox" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">Inbox{unread > 0 ? ` (${unread})` : ""}</Link>
                 {userRoles?.some((role) => role === "partner" || role === "admin") && <Link to="/talent" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold">Talent directory</Link>}
                 {isPrivileged && <Link to="/admin" onClick={() => setMenuOpen(false)} className="rounded-md px-4 py-3 font-semibold text-primary">Workspace</Link>}
