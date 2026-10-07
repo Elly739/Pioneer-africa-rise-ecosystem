@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Flag } from "lucide-react";
+import { Flag, MessagesSquare } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { listReports, resolveReport } from "@/lib/api/reports.functions";
+import { getReportedConversation } from "@/lib/api/messages.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/reports")({
   head: () => ({ meta: [{ title: "Reports · Pioneer Africa Hub Admin" }] }),
@@ -61,6 +63,7 @@ function ReportsPage() {
             </div>
             <p className="font-display font-bold mt-2">{r.label}</p>
             <p className="text-sm text-brand-navy/70 mt-1">“{r.reason}”</p>
+            {r.conversationId && <ConversationReview conversationId={r.conversationId} />}
             <div className="flex flex-wrap gap-2 mt-4">
               {r.link && (
                 <Link to={r.link} className="px-3 py-1.5 rounded-full border border-brand-navy/10 text-xs font-bold">
@@ -95,6 +98,46 @@ function ReportsPage() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Staff only reach a conversation through a report — the button below is the sole entry point.
+function ConversationReview({ conversationId }: { conversationId: string }) {
+  const fetchConversation = useServerFn(getReportedConversation);
+  const [open, setOpen] = useState(false);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["reported-conversation", conversationId],
+    queryFn: () => fetchConversation({ data: { conversationId } }),
+    enabled: open,
+  });
+
+  return (
+    <div className="mt-3">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="px-3 py-1.5 rounded-full border border-brand-navy/10 text-xs font-bold inline-flex items-center gap-1.5"
+      >
+        <MessagesSquare className="size-3.5" aria-hidden /> {open ? "Hide messages" : "Read conversation"}
+      </button>
+      {open && isLoading && <p className="text-xs text-brand-navy/50 mt-2">Loading messages…</p>}
+      {open && error && <p className="text-xs text-red-600 mt-2">Could not open this conversation.</p>}
+      {open && data && (
+        <div className="mt-3 rounded-xl bg-brand-bg border border-brand-navy/10 p-3 space-y-2 max-h-72 overflow-y-auto">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-brand-navy/50">
+            Between {data.members.map((m: { id: string; name: string }) => m.name).join(" and ")}
+          </p>
+          {data.messages.length === 0 && <p className="text-xs text-brand-navy/50">No messages in this conversation.</p>}
+          {data.messages.map((msg) => (
+            <div key={msg.id} className="text-sm">
+              <span className="font-bold">{msg.senderName}</span>
+              <span className="text-brand-navy/40 text-xs ml-2">{new Date(msg.created_at).toLocaleString()}</span>
+              <p className="text-brand-navy/80 whitespace-pre-wrap">{msg.body}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>

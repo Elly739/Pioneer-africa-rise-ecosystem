@@ -66,13 +66,13 @@ export const listReports = createServerFn({ method: "GET" })
     const rMap = new Map((replies.data ?? []).map((r) => [r.id, r]));
     const profMap = new Map((profiles.data ?? []).map((p) => [p.id, p]));
 
-    const memberIds = Array.from(new Set((participants ?? []).map((p) => p.user_id)));
+    const memberIds = Array.from(new Set((participants.data ?? []).map((p) => p.user_id)));
     const names = memberIds.length
       ? ((await supabaseAdmin.from("profiles").select("id,display_name").in("id", memberIds)).data ?? [])
       : [];
     const nameMap = new Map(names.map((p) => [p.id, p.display_name ?? "Pioneer member"]));
     const convMembers = new Map<string, string[]>();
-    for (const p of participants ?? []) {
+    for (const p of participants.data ?? []) {
       convMembers.set(p.conversation_id, [
         ...(convMembers.get(p.conversation_id) ?? []),
         nameMap.get(p.user_id) ?? "Pioneer member",

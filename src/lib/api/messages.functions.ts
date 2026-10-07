@@ -174,7 +174,7 @@ export const getReportedConversation = createServerFn({ method: "GET" })
     ]);
     if (error) throw new Error(error.message);
 
-    const memberIds = (participants ?? []).map((p) => p.user_id);
+    const memberIds = (participants.data ?? []).map((p) => p.user_id);
     const { data: profiles } = await supabaseAdmin.from("profiles").select("id,display_name").in("id", memberIds);
     const nameMap = new Map((profiles ?? []).map((p) => [p.id, p.display_name ?? "Pioneer member"]));
 

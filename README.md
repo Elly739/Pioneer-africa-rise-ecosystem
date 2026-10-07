@@ -37,7 +37,9 @@ Live: <https://pioneer-africa-hub.lovable.app>
 - Discussion **Spaces** (General, Learning, Careers, Building, Mentorship) with replies, participant counts, and activity signals.
 - **Upvotes** on posts and replies; the discussion author can mark an **accepted answer**, which floats to the top.
 - **Mentor office hours** — mentors can post scheduled office-hours threads.
-- **Reporting** — members can report projects, posts, and replies into the moderation queue.
+- **Profiles linked from the community** — a discussion author's or reply author's name opens their public profile.
+- **Private messaging** (`/inbox`) — members start a chat from someone's profile; a conversation stays between the two people unless one of them reports it.
+- **Reporting** — members can report projects, posts, replies, and conversations into the moderation queue.
 - **Blog** — articles on innovation, tech, and African startups. Authoring is restricted to admins and partners via the Articles workspace.
 
 ### Gamification
@@ -52,7 +54,7 @@ Live: <https://pioneer-africa-hub.lovable.app>
 
 ### Platform
 - **Onboarding wizard** (`/welcome`) — interests, skill level, primary goal → drives the "For You" recommendations.
-- **Notifications** — real-time bell for project likes, discussion replies, application status changes, challenge updates, and admin announcements.
+- **Notifications** — real-time bell for project likes, discussion replies, new messages, application status changes, challenge updates, and admin announcements.
 - **Role-aware dashboards** — learner, teacher, partner, moderator, and admin bands.
 - **Admin hub** — users, role requests, invites, content moderation, opportunities, courses, articles, announcements, **reports queue**, **funnel analytics** (signup → onboarded → enrolled → project shipped → applied).
 - **Verified partners** — admin-verified badge on partner profiles.
@@ -95,13 +97,14 @@ src/
     blog.index.tsx           articles
     leaderboard.tsx          public leaderboard
     verify.tsx               public certificate verification
-    u.$userId.tsx            public profile
+    u.$userId.tsx            public profile (follow, message)
     _authenticated/          gated subtree (auth required)
       dashboard.tsx          role-aware dashboard
       welcome.tsx            onboarding wizard
       mentor.tsx / advisor.tsx   AI coaches
       portfolio.tsx          portfolio editor
       applications.tsx       application tracker
+      inbox.tsx, inbox.$conversationId.tsx   private messages
       talent.tsx             talent directory (partner/admin)
       certificates.tsx, cv.tsx, lessons.$lessonId.tsx, quizzes.$quizId.tsx
       request-access.tsx, invite.$token.tsx
